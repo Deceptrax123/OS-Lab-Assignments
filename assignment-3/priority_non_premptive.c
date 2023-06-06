@@ -3,14 +3,15 @@
 
 struct job
 {
-    int jno;
+    int priority;
     int at;
     int bt;
+    int jno;
 };
 
 struct gaant
 {
-    int no;
+    int jno;
     int st;
     int et;
 };
@@ -27,7 +28,7 @@ struct job minimum(struct job *j, int size, int completed[], int csize)
 {
 
     // initialize minimum with not completed job
-    struct job min_bt;
+    struct job min_p;
     for (int k = 0; k < size; k++)
     {
         int iflag = 0;
@@ -41,7 +42,7 @@ struct job minimum(struct job *j, int size, int completed[], int csize)
         }
         if (iflag == 0)
         {
-            min_bt = j[k];
+            min_p = j[k];
         }
     }
 
@@ -59,16 +60,16 @@ struct job minimum(struct job *j, int size, int completed[], int csize)
         }
         if (flag == 0)
         {
-            if (cjob.bt < min_bt.bt)
+            if (cjob.priority < min_p.priority)
             {
-                min_bt = cjob;
+                min_p = cjob;
             }
         }
     }
-    return min_bt;
+    return min_p;
 }
 
-struct gaant *sjf_npremptive(struct job *j, int n, int total)
+struct gaant *priority_npremptive(struct job *j, int n, int total)
 {
     qsort(j, n, sizeof(struct job), comparator);
 
@@ -89,7 +90,7 @@ struct gaant *sjf_npremptive(struct job *j, int n, int total)
     struct job executing = ready_queue[0];
 
     g[ctr].st = t;
-    g[ctr].no = ready_queue[0].jno;
+    g[ctr].jno = ready_queue[0].jno;
 
     while (t != total)
     {
@@ -110,17 +111,17 @@ struct gaant *sjf_npremptive(struct job *j, int n, int total)
 
         // end the current running process
         g[ctr].et = t;
-        completed[c] = g[ctr].no;
+        completed[c] = g[ctr].jno;
         c += 1;
 
         // check if all processes are completed
         if (t != total)
         {
-            // get the next job for execution-shortest burst time
+            // get the next job for execution-lowest priority
             executing = minimum(ready_queue, queue_counter, completed, c);
             ctr += 1;
             g[ctr].st = t;
-            g[ctr].no = executing.jno;
+            g[ctr].jno = executing.jno;
         }
     }
     return g;
@@ -151,13 +152,19 @@ int main()
         total_time += j[i].bt;
     }
 
+    printf("Enter Priorities\n");
+    for (int i = 0; i < n; i++)
+    {
+        scanf("%d", &j[i].priority);
+    }
+
     struct gaant *f = (struct gaant *)malloc(sizeof(struct gaant) * n);
-    f = sjf_npremptive(j, n, total_time);
+    f = priority_npremptive(j, n, total_time);
 
     printf("Job    Start     End\n");
 
     for (int i = 0; i < n; i++)
     {
-        printf("%d      %d       %d\n", f[i].no + 1, f[i].st, f[i].et);
+        printf("%d      %d       %d\n", f[i].jno + 1, f[i].st, f[i].et);
     }
 }

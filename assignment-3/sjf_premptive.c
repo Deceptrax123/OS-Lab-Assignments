@@ -162,7 +162,7 @@ void sjf_premptive(struct job *j, int n, int total)
     printf("Job    Start     End\n");
     for (int i = 0; i < ctr + 1; i++)
     {
-        printf("%d      %d       %d\n", g[i].jno, g[i].st, g[i].et);
+        printf("%d      %d       %d\n", g[i].jno + 1, g[i].st, g[i].et);
     }
 }
 

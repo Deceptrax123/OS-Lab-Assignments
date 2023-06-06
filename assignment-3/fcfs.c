@@ -71,6 +71,6 @@ int main()
     printf("Job    Start     End\n");
     for (int i = 0; i < n; i++)
     {
-        printf("%d      %d       %d\n", i, f[i].st, f[i].et);
+        printf("%d      %d       %d\n", i + 1, f[i].st, f[i].et);
     }
 }
